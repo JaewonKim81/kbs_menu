@@ -1,0 +1,29 @@
+name: Menu Scraper
+
+on:
+  schedule:
+    # 매주 월요일 일찍 업데이트된다면: 한국 시간 월요일 오전 8시 (UTC 일요일 23:00)
+    - cron: '0 23 * * 0'
+  workflow_dispatch: # GitHub 웹페이지에서 수동으로 실행할 수 있는 버튼
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Repository 체크아웃
+        uses: actions/checkout@v4
+        
+      - name: Node.js 22 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: 의존성 설치
+        run: npm install
+        
+      - name: scraper.js 실행 (Gist 업데이트)
+        env:
+          GIST_ID: ${{ secrets.GIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scraper.js
