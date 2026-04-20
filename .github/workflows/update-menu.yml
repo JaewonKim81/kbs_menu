@@ -1,0 +1,26 @@
+name: 🍱 Weekly Menu Scraper
+
+on:
+  schedule:
+    # 매주 월요일 오전 7시 (KST = UTC+9 → UTC 22:00 일요일)
+    - cron: "0 22 * * 0"
+  workflow_dispatch: # 수동 실행 버튼
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run scraper
+        env:
+          GIST_ID: ${{ secrets.GIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.MENU_GITHUB_TOKEN }}
+        run: node scraper.js
